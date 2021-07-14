@@ -14,7 +14,7 @@ router.post("/", async (req, res) => {
     });
     if (!user) {
       return res.status(400).send({
-        errorMessage: "이메일 또는 패스워드가 잘못됐습니다.",
+        errorMessage: "아이디 또는 패스워드가 잘못됐습니다.",
       });
     }
     // 토큰 생성
@@ -28,7 +28,7 @@ router.post("/", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(400).send({
-      errorMessage: "이메일 또는 패스워드가 잘못됐습니다.",
+      errorMessage: "아이디 또는 패스워드가 잘못됐습니다.",
     });
   }
 });

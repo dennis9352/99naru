@@ -1,8 +1,81 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Text, Image, Grid } from "../elements";
+import io from "socket.io-client";
+import TextField from "@material-ui/core/TextField";
+import jwt_decode from "jwt-decode";
 
 const ChattingBar = (props) => {
+  const token = sessionStorage.getItem("MY_SESSION");
+  const decoded = jwt_decode(token);
+  const nickname = decoded.nickname;
+  const user_id = decoded.userId;
+  const date = new Date().toLocaleTimeString();
+  console.log(date);
+
+  const [state, setState] = useState({
+    message: "",
+    nickname: nickname,
+    date: date,
+  });
+  const [chat, setChat] = useState([]);
+
+  const socketRef = useRef();
+
+  useEffect(() => {
+    socketRef.current = io.connect("http://localhost:3000");
+    socketRef.current.on("receiveMsg", ({ nickname, message, date }) => {
+      setChat([...chat, { nickname, message, date }]);
+    });
+    return () => socketRef.current.disconnect();
+  }, [chat]);
+
+  const onTextChange = (e) => {
+    setState({ ...state, [e.target.name]: e.target.value });
+  };
+
+  const onMessageSubmit = (e) => {
+    const { message, nickname, date } = state;
+    socketRef.current.emit("sendMsg", { message, nickname, date });
+    e.preventDefault();
+    setState({ message: "" });
+  };
+
+  const renderChat = () => {
+    return chat.map(({ nickname, message, date }, index) => (
+      <div key={index}>
+        <h3>
+          {nickname}: <span>{message}</span>
+          <br></br>
+          <span>( {date} )</span>
+        </h3>
+      </div>
+    ));
+  };
+
+  return (
+    <div className="card">
+      <div className="render-chat">
+        <h1>Chat Log</h1>
+        {renderChat()}
+      </div>
+      <form onSubmit={onMessageSubmit}>
+        <h1>Messenger</h1>
+        <div>
+          <TextField
+            name="message"
+            onChange={(e) => onTextChange(e)}
+            value={state.message}
+            id="outlined-multiline-static"
+            variant="outlined"
+            label="Message"
+          />
+        </div>
+        <button>Send Message</button>
+      </form>
+    </div>
+  );
+
   return (
     <React.Fragment>
       <Container>

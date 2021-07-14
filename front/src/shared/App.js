@@ -28,7 +28,7 @@ const App = (props) => {
   const is_session = sessionStorage.getItem("MY_SESSION") ? true : false;
   if (is_session) {
   return (
-    
+
     <React.Fragment>
       <ConnectedRouter history={history}>
         <Route path="/" exact component={SignInSide} />

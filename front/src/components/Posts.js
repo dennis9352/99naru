@@ -15,8 +15,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { actionCreators as postActions } from "../redux/modules/post";
 import axios from "axios";
 
+
 const PostList = (props) => {
-  console.log(props.post_data.likedUsers.length)
+  const dispatch = useDispatch();
   const [show, setShow] = React.useState(false);
   const [showComment, setShowComment] = React.useState(false);
   const [editPost, setEdit] = React.useState("");
@@ -28,36 +29,16 @@ const PostList = (props) => {
   const post_user_id = props.post_data.userId._id
   const post_id = props.post_data._id
   const comments = props.post_data.comments
-  console.log(comments)
-  console.log(post_id)
   const modifyPost = () => {
     if (editPost===""){
         window.alert("칸 채워주세요!")
         return;
     }
-    axios
-    .put(`http://localhost:3000/api/posts/${post_id}`, {
-        text: `${editPost}`,
-    },{headers : {'Authorization': `Bearer ${sessionStorage.getItem("MY_SESSION")}`}})
-    .then((res) => {
-      console.log(res)
-    });
-    // dispatch(postActions.getpostDB());
-    window.location.reload()
-    console.log(props)
+    dispatch(postActions.modifypostDB(post_id,editPost))
+      hide_edit()
 }
-
   const deletePost = () => {
-  axios
-    .delete(`http://localhost:3000/api/posts/${props.post_data._id}`,
-    {headers : {'Authorization': `Bearer ${sessionStorage.getItem("MY_SESSION")}`}}
-  ).then((response) => {
-    console.log(response.data)
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-    window.location.reload();
+    dispatch(postActions.deletePostDB(props.post_data._id))
   }
   return (
     <React.Fragment>
@@ -70,7 +51,7 @@ const PostList = (props) => {
           <Grid is_flex width="100%">
             <Grid is_flex width="100%">
               <Grid right>
-                <Text>{props.post_data.created_at.split('T')[0]}</Text>
+                <Text>{props.post_data.created_at}</Text>
               </Grid>
               {post_user_id===user_info_id ? 
               <Grid is_flex width="100" left padding="0px 10px">

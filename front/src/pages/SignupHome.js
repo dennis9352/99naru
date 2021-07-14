@@ -1,21 +1,15 @@
 import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
 import Paper from '@material-ui/core/Paper';
-import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { useDispatch } from "react-redux";
 import { actionCreators as userActions } from "../redux/modules/user";
-
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,6 +52,20 @@ export default function SignupSide() {
   const goSignin = () => {
     window.location.href = "/"
   }
+  const duplicateCheck = () => {
+    console.log('sdf')
+    axios
+    .post(`http://localhost:3000/api/duplicate`, {
+      loginId : `${id}`,
+      nickname : `${nick}`,
+    },)
+    .then((res) => {
+      console.log(res)
+    }).catch(function(err) {
+      window.alert("형식을 맞춰주세요!")
+    });
+  }
+  
   const signup = () => {
   if (id==="" || pwd==="" || pwd_check==="" || nick==="") {
     window.alert("전부 채워주세요!");
@@ -114,6 +122,14 @@ export default function SignupSide() {
               label="NickName"
               autoFocus
             />
+            <Button
+              onClick={duplicateCheck}
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}>
+              아이디/닉네임 중복확인
+            </Button>
             <TextField
               onChange={(e) => {setPwd(e.target.value)}}
               variant="outlined"

@@ -1,6 +1,5 @@
 import mongoose from 'mongoose'
 import { commentSchema } from './comment.js'
-import { userSchema } from './user.js'
 
 const postSchema = new mongoose.Schema({
 	text: {
@@ -21,8 +20,9 @@ const postSchema = new mongoose.Schema({
 	comments: [commentSchema],
 	// count the number of liked users by implementing a method
 	likedUsers: {
-		type: userSchema,
-		default: {}
+		type: [mongoose.Schema.Types.ObjectId],
+		default: [],
+		ref: 'User'
 	}
 })
 

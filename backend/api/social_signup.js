@@ -43,7 +43,7 @@ function authSuccess(req, res) {
     }
   } catch (err) {
     console.error(err);
-    res.status(400).send(`${provider} 로그인에 실패했습니다`);
+    res.status(400).send({ message: `${provider} 로그인에 실패했습니다` });
   }
 }
 

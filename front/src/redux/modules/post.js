@@ -2,20 +2,17 @@ import { createAction, handleActions } from "redux-actions";
 import { produce } from "immer";
 import axios from "axios";
 
-const ADD_POST = "GET_POST";
+const ADD_POST = "ADD_POST";
 const SET_POST = "SET_POST";
 const MODIFY_POST = "MODIFY_POST";
 const DELETE_POST = "DELETE_POST";
-const IS_MODIFY = "IS_MODIFY";
 
-const addPost = createAction(ADD_POST, (post) => ({ post }));
+const addPost = createAction(ADD_POST, (post) => ({post}))
 const setPost = createAction(SET_POST, (post_list) => ({ post_list }));
 const modifyPost = createAction(MODIFY_POST, (post_list) => ({ post_list })); 
-const deletePost = createAction(DELETE_POST, (post_list) => ({ post_list })); 
-const is_modify = createAction(IS_MODIFY, (post_list) => ({ post_list })); 
 
 const initialState = {
-  list: [],
+  list: [], // prev state > post > list
 };
 
 const initialPost = {
@@ -37,50 +34,153 @@ const getpostDB = () => {
   }
 };
 
-const addpostDB = (text) => {
-  return function (dispatch, getState, {history}) {
+const addPostDB = (text, list) => {
+  console.log(text)
+  console.log(list)
+  return function (dispatch, getState, {history}){
     axios
-    .post('http://localhost:3000/api/posts',
-    {text: text},
-    // {headers : {'Authorization': `Bearer ${sessionStorage.getItem("MY_SESSION")}`}}
-  ).then((response) => {
-    console.log(response.data)
-    // dispatch(setPost(response.data))
-    })
-    .catch((error) => {
-      console.log(error);
+    .post("http://localhost:3000/api/posts",
+    {text: text,},
+    {headers : {'Authorization': `Bearer ${sessionStorage.getItem("MY_SESSION")}`}}
+    )
+    .then((res) => {
+      console.log(res)
+      axios
+      .get('http://localhost:3000/api/posts',
+    {headers : {'Authorization': `Bearer ${sessionStorage.getItem("MY_SESSION")}`}}
+    ).then((response) => {
+      console.log(response.data)
+      dispatch(setPost(response.data))
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     });
+
   }
+  }
+
+  const deletePostDB = (post_id) => {
+    return function (dispatch,getState,{history}){
+    axios
+      .delete(`http://localhost:3000/api/posts/${post_id}`,
+      {headers : {'Authorization': `Bearer ${sessionStorage.getItem("MY_SESSION")}`}}
+    ).then((res) => {
+      console.log(res)
+      axios
+      .get('http://localhost:3000/api/posts',
+    {headers : {'Authorization': `Bearer ${sessionStorage.getItem("MY_SESSION")}`}}
+    ).then((response) => {
+      console.log(response.data)
+      dispatch(setPost(response.data)) //디스패치
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+      // window.location.reload();
+      history.replace("/main/home");
+
+    }  
+    }
+
+
+
+const modifypostDB = (post_id, editPost) => {
+    return function (dispatch, getState, {history}){
+      axios
+      .put(`http://localhost:3000/api/posts/${post_id}`, {
+          text: `${editPost}`,
+      },{headers : {'Authorization': `Bearer ${sessionStorage.getItem("MY_SESSION")}`}})
+      .then((res) => {
+        console.log(res)
+        axios
+        .get('http://localhost:3000/api/posts',
+      {headers : {'Authorization': `Bearer ${sessionStorage.getItem("MY_SESSION")}`}}
+      ).then((response) => {
+        console.log(response.data)
+        dispatch(setPost(response.data))
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      });
+
+
+    }
 };
 
-const setpostDB = (id, pwd, user_name) => {
-
-};
-
-const modifypostDB = (postId, text) => {
+const addCommentDB = (postId, comments) => {
+  return function (dispatch, getState, {history}){
+    axios
+    .post("http://localhost:3000/api/comments", {
+      postId: postId,
+      text: comments,
+    },{headers : {'Authorization': `Bearer ${sessionStorage.getItem("MY_SESSION")}`}})
+    .then((res) => {
+      axios
+        .get('http://localhost:3000/api/posts',
+      {headers : {'Authorization': `Bearer ${sessionStorage.getItem("MY_SESSION")}`}}
+      ).then((response) => {
+        console.log(response.data)
+        dispatch(setPost(response.data))
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    });
     
-};
+  }
+}
 
-const deletePostDB = (postId) => {
-  console.log(postId)
-};
+const deleteCommentDB = (postId, commentId) => {
+  console.log(postId, commentId)
+  return function (dispatch, getState, {history}){
+    axios
+    .delete("http://localhost:3000/api/comments", {
+      postId: postId,
+      commentId: commentId,
+    },{headers : {'Authorization': `Bearer ${sessionStorage.getItem("MY_SESSION")}`}})
+    .then((res) => {
+      axios
+        .get('http://localhost:3000/api/posts',
+      {headers : {'Authorization': `Bearer ${sessionStorage.getItem("MY_SESSION")}`}}
+      ).then((response) => {
+        console.log(response.data)
+        dispatch(setPost(response.data))
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    });
+    
+  }
+}
 
 export default handleActions(
   {
     [ADD_POST]: (state, action) =>
       produce(state, (draft) => {
+        // draft.post.unshift(action.payload.post_list);
+        console.log(action.payload.post)
       }),
+
     [SET_POST]: (state, action) =>
       produce(state, (draft) => {
         draft.list = action.payload.post_list;
-        draft.is_modify = false;
       }),
-    [MODIFY_POST]: (state, action) => produce(state, (draft) => {}),
-    [IS_MODIFY]: (state, action) => 
+    [MODIFY_POST]: (state, action) =>
     produce(state, (draft) => {
-      draft.list = action.payload.post_list;
-      draft.is_modify = true;
-      console.log(action.payload.post_list)
+      // 배열의 몇 번째에 있는 지 찾습니다.
+      let idx = draft.list.findIndex((p) => p._id === action.payload.post_list);
+      () => {
+        console.log(action.payload.post_list)
+      }
+      // 해당 위치에 넣어줍니다.
+      draft.list[idx] = { ...draft.list[idx], ...action.payload.post };
     }),
   },
   
@@ -88,15 +188,14 @@ export default handleActions(
 );
 
 const actionCreators = {
-  addPost,
   setPost,
   modifyPost,
-  is_modify,
   getpostDB,
-  setpostDB,
   modifypostDB,
-  addpostDB,
+  addPostDB,
   deletePostDB,
+  addCommentDB,
+  deleteCommentDB,
 };
 
 export { actionCreators };

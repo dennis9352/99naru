@@ -37,7 +37,8 @@ router.get('/', (req, res) => {
 })
 router.post('/', (req, res) => {
 	const { postId, text } = req.body
-	Comment.create({postId, text}).then(comment => {
+	const { userId } = res.locals
+	Comment.create({ postId, text, userId }).then(comment => {
 		Post.findById(postId).exec().then(post => {
 			post.comments.push(comment)
 			return post.save()

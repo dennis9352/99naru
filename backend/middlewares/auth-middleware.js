@@ -25,9 +25,10 @@ export default (req, res, next) => {
   } catch (err) {
     if (err.name === "TokenExpiredError") {
       res.status(419).send({ message: "token 만료" });
+      return;
+    } else {
+      res.status(401).send({ message: "token이 유효하지 않습니다." });
+      return;
     }
-    res
-      .status(401)
-      .send({ error: err.name, message: "token이 유효하지 않습니다." });
   }
 };

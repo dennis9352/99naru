@@ -4,7 +4,7 @@
   "description": "Hanghae99 w6 miniproject",
   "main": "/backend/index.js",
   "scripts": {
-    "start": "npx nodemon ./backend/index.js"
+    "start": "npx nodemon ./backend/server.js"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/seungbin0508/99naru#readme",
   "dependencies": {
+    "aws-sdk": "^2.944.0",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
@@ -29,7 +30,6 @@
     "mongoose": "^5.13.2",
     "multer": "^1.4.2",
     "multer-s3": "^2.9.0",
-    "aws-sdk": "^2.944.0",
     "nodemon": "^2.0.12",
     "npm": "^7.19.1",
     "passport": "^0.1.18",
@@ -41,9 +41,5 @@
     
   },
   "type": "module",
-  "devDependencies": {
-    "eslint": "^7.2.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.22.1"
-  }
+  "devDependencies": {}
 }

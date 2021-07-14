@@ -39,6 +39,8 @@ const loginDB = (id, pwd) => {
       dispatch(setUser(id))
       // history.push("/main/home");
       window.location.href = "/main/home";
+    }).catch(function (err){
+      window.alert("로그인 실패!");
     });
   }
 };
@@ -53,6 +55,8 @@ const signupDB = (id, pwd, nickname) => {
       })
       .then((res) => {
         dispatch(loginDB(id,pwd))
+      }).catch(function(err){
+        console.log("회원가입 실패!")
       });
     }
 };

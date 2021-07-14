@@ -7,22 +7,16 @@ import axios from "axios";
 
 const PostWrite = (props) => {
   const user_nick = useSelector((state) => state.user.nick_name);
+  const data = useSelector((state) => state);
   const dispatch = useDispatch();
-  const [addPost, setPost] = React.useState("");
-  const [modifypost, setModify] = React.useState("");
-  const _addpost = () => {
-    console.log(addPost)
-    // dispatch(postActions.addPostDB(addPost))
-    axios
-      .post("http://localhost:3000/api/posts",
-      {text: `${addPost}`,},
-      {headers : {'Authorization': `Bearer ${sessionStorage.getItem("MY_SESSION")}`}}
-      )
-      .then((res) => {
-        console.log(res)
-      });
-      window.location.reload()
-    
+  const [text, setTest] = React.useState("");
+  
+  const addPost = () => {
+    if(text===""){
+      window.alert("칸을 채워주세요!")
+      return;
+    }
+    dispatch(postActions.addPostDB(text, data.post.list));
   }
 
 
@@ -35,12 +29,12 @@ const PostWrite = (props) => {
             <div>{user_nick}</div>
           </Grid>
           <Grid width="80%">
-            <Input _onChange={(e)=>{setPost(e.target.value)}} multiLine />
+            <Input _onChange={(e)=>{setTest(e.target.value)}} multiLine />
           </Grid>
         </Grid>
         <Grid right padding="0px 16px 16px 0px">
           <Button 
-          _onClick={_addpost}
+          _onClick={addPost}
           width="100px" margin="0px 2px 0px 2px">
             작성하기
           </Button>

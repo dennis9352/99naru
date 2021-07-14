@@ -3,22 +3,26 @@ import styled from "styled-components";
 import { Grid, Image, Text } from "../elements";
 
 import {
-  IoChatbubbleEllipsesOutline,
-  IoChatbubbleEllipsesSharp,
-  IoThumbsUpOutline,
-  IoThumbsUpSharp,
   IoTrash,
-  IoSettingsOutline,
 } from "react-icons/io5";
+import { useDispatch, useSelector } from "react-redux";
+import { actionCreators as postActions } from "../redux/modules/post";
 
 const CommentList = (props) => {
-  console.log(props.post_info)
-  console.log(props.comments)
+  // console.log(props.comments._id)
+  // console.log(props.post_info.post_data._id)
+  const postId = props.comments._id
+  const commentId = props.post_info.post_data._id
+  const dispatch = useDispatch();
+  const user_info = useSelector((state) => state.user.user_id)
+  const deleteComent = () => {
+    dispatch(postActions.deleteCommentDB(postId, commentId))
+  }
+
   return (
     <Grid is_flex padding="0px 16px 0px 16px">
       <Grid center is_flex width="20%">
-        <Image shape="circle" />
-        <Text bold>닉네임</Text>
+        <Text bold>{props.comments.userId.nickname}</Text>
       </Grid>
       <Grid is_flex margin="0px 4px">
         <Grid width="70%">
@@ -32,13 +36,7 @@ const CommentList = (props) => {
           </Grid>
           <Grid is_flex width="100" padding="0px 10px">
             <IconWrap>
-              <IoChatbubbleEllipsesOutline />
-            </IconWrap>
-            <IconWrap>
-              <IoSettingsOutline />
-            </IconWrap>
-            <IconWrap>
-              <IoTrash />
+              {user_info===props.comments.userId._id?<IoTrash onClick={deleteComent}/>:<div></div>}
             </IconWrap>
           </Grid>
         </Grid>

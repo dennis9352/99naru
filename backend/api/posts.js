@@ -42,7 +42,13 @@ router.delete('/:postId', (req, res) => {
 	})
 })
 router.get('/', (req, res) => {
-	Post.find().populate('comments').sort('-created_at').exec().
+	Post.find().populate({
+		path: 'comments',
+		populate: {
+			path: 'userId',
+			select: '-password'
+		}
+	}).populate('userId', '-password').sort('-created_at').exec().
 		then((posts) => {
 			res.send(posts)
 		}).
