@@ -12,7 +12,7 @@ const Input = (props) => {
         {/* {label && <Text margin="0px">{label}</Text>} */}
         <ElTextarea
           rows={3}
-          // value={value}
+          value={value}
           placeholder={placeholder}
           onChange={_onChange}
         ></ElTextarea>
@@ -27,7 +27,7 @@ const Input = (props) => {
           type={type}
           placeholder={placeholder}
           onChange={_onChange}
-          // value={value}
+          value={value}
         />
       </Grid>
     </React.Fragment>

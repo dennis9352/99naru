@@ -18,7 +18,6 @@ import { actionCreators as userActions } from "../redux/modules/user";
 
 
 const SideBar = (props) => {
-  console.log(props)
   const dispatch = useDispatch();
   const logout = () => {
     dispatch(userActions.logOut());
@@ -29,17 +28,20 @@ const SideBar = (props) => {
   const goMyPage = () => {
     window.location.href = "/main/user/:id"
   }
+  const goMyChat = () => {
+    window.location.href = "/main"
+  }
   return (
     <React.Fragment>
       <Container>
         <IconWrap>
-          <IoHome onClick={goMyHome}/>
+          <IoHomeOutline onClick={goMyHome}/>
         </IconWrap>
         <IconWrap>
           <IoPersonOutline onClick={goMyPage}/>
         </IconWrap>
         <IconWrap>
-          <IoChatboxOutline />
+          <IoChatboxOutline onClick={goMyChat}/>
         </IconWrap>
         <IconWrap>
           <IoPeopleOutline />

@@ -35,6 +35,7 @@ const PostList = (props) => {
     }
     dispatch(postActions.modifypostDB(post_id,editPost))
       hide_edit()
+      setEdit("")
 }
   const deletePost = () => {
     dispatch(postActions.deletePostDB(props.post_data._id))
@@ -72,7 +73,7 @@ const PostList = (props) => {
             
             {show ? 
             <div>
-              <Input _onChange={(e) => {setEdit(e.target.value)}} placeholder="게시글 수정 중.." multiLine>
+              <Input value={editPost} _onChange={(e) => {setEdit(e.target.value)}} placeholder="게시글 수정 중.." multiLine>
               </Input>
             <Button width="15%" _onClick={modifyPost}>
               수정

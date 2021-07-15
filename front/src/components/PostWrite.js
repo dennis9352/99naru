@@ -10,8 +10,6 @@ const PostWrite = (props) => {
   const data = useSelector((state) => state);
   const dispatch = useDispatch();
   const [text, setTest] = React.useState("");
-  // const inputRef = useRef();
-  
   
   const addPost = () => {
     if(text===""){
@@ -20,8 +18,8 @@ const PostWrite = (props) => {
     }
     dispatch(postActions.addPostDB(text, data.post.list));
     setTest("");
-    // window.alert("댓글 작성 완료!")
   }
+
   return (
     <React.Fragment>
       <WriteForm>

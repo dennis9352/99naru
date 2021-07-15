@@ -15,12 +15,13 @@ const CommentWrite = (props) => {
         return;
     } 
     dispatch(postActions.addCommentDB(props.post_id,comments))
+    setComments("")
 }
 
   return (
     <React.Fragment>
       <Grid padding="5px" is_flex height="10px">
-        <Input _onChange={(e) => {setComments(e.target.value)}} placeholder="댓글 내용을 입력해주세요" />
+        <Input value={comments} _onChange={(e) => {setComments(e.target.value)}} placeholder="댓글 내용을 입력해주세요" />
         <Button _onClick={addComment} type="text" width="80px" margin="0px 2px 0px 2px">
           작성하기
         </Button>

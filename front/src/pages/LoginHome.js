@@ -85,7 +85,7 @@ export default function SignInSide() {
               fullWidth
               name="password"
               label="Password"
-              // type="password"
+              type="password"
               id="password"
               autoComplete="current-password"
             />
