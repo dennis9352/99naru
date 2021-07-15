@@ -21,8 +21,16 @@ router.delete('/:commentId', (req, res) => {
 	// By deleting the comment, it may cause descendant comments to be orphans
 	// Only implement above if 대댓글 is allowed
 	const { commentId } = req.params
+	const { postId } = req.body
+	console.log('포스트 아이디', postId)//
 	Comment.findByIdAndDelete(commentId).exec().then(() => {
-		res.sendStatus(200)
+		return Post.findById(postId).exec().then(post => {
+			console.log(post.comments.id(commentId))
+			post.comments.id(commentId).remove()
+			post.save().then(() => {
+				res.sendStatus(200)
+			})
+		})
 	}).catch(err => {
 		console.error(err)
 		res.status(400).json({

@@ -22,7 +22,7 @@ const initialPost = {
 const getpostDB = () => {
   return function (dispatch, getState, {history}) {
     axios
-    .get('http://localhost:3000/api/posts',
+    .get('http://13.209.13.200/api/posts',
   {headers : {'Authorization': `Bearer ${sessionStorage.getItem("MY_SESSION")}`}}
   ).then((response) => {
     console.log(response.data)
@@ -39,14 +39,14 @@ const addPostDB = (text, list) => {
   console.log(list)
   return function (dispatch, getState, {history}){
     axios
-    .post("http://localhost:3000/api/posts",
+    .post("http://13.209.13.200/api/posts",
     {text: text,},
     {headers : {'Authorization': `Bearer ${sessionStorage.getItem("MY_SESSION")}`}}
     )
     .then((res) => {
       console.log(res)
       axios
-      .get('http://localhost:3000/api/posts',
+      .get('http://13.209.13.200/api/posts',
     {headers : {'Authorization': `Bearer ${sessionStorage.getItem("MY_SESSION")}`}}
     ).then((response) => {
       console.log(response.data)
@@ -63,12 +63,12 @@ const addPostDB = (text, list) => {
   const deletePostDB = (post_id) => {
     return function (dispatch,getState,{history}){
     axios
-      .delete(`http://localhost:3000/api/posts/${post_id}`,
+      .delete(`http://13.209.13.200/api/posts/${post_id}`,
       {headers : {'Authorization': `Bearer ${sessionStorage.getItem("MY_SESSION")}`}}
     ).then((res) => {
       console.log(res)
       axios
-      .get('http://localhost:3000/api/posts',
+      .get('http://13.209.13.200/api/posts',
     {headers : {'Authorization': `Bearer ${sessionStorage.getItem("MY_SESSION")}`}}
     ).then((response) => {
       console.log(response.data)
@@ -92,13 +92,13 @@ const addPostDB = (text, list) => {
 const modifypostDB = (post_id, editPost) => {
     return function (dispatch, getState, {history}){
       axios
-      .put(`http://localhost:3000/api/posts/${post_id}`, {
+      .put(`http://13.209.13.200/api/posts/${post_id}`, {
           text: `${editPost}`,
       },{headers : {'Authorization': `Bearer ${sessionStorage.getItem("MY_SESSION")}`}})
       .then((res) => {
         console.log(res)
         axios
-        .get('http://localhost:3000/api/posts',
+        .get('http://13.209.13.200/api/posts',
       {headers : {'Authorization': `Bearer ${sessionStorage.getItem("MY_SESSION")}`}}
       ).then((response) => {
         console.log(response.data)
@@ -116,13 +116,13 @@ const modifypostDB = (post_id, editPost) => {
 const addCommentDB = (postId, comments) => {
   return function (dispatch, getState, {history}){
     axios
-    .post("http://localhost:3000/api/comments", {
+    .post("http://13.209.13.200/api/comments", {
       postId: postId,
       text: comments,
     },{headers : {'Authorization': `Bearer ${sessionStorage.getItem("MY_SESSION")}`}})
     .then((res) => {
       axios
-        .get('http://localhost:3000/api/posts',
+        .get('http://13.209.13.200/api/posts',
       {headers : {'Authorization': `Bearer ${sessionStorage.getItem("MY_SESSION")}`}}
       ).then((response) => {
         console.log(response.data)
@@ -137,27 +137,30 @@ const addCommentDB = (postId, comments) => {
 }
 
 const deleteCommentDB = (postId, commentId) => {
-  console.log(postId, commentId)
-  return function (dispatch, getState, {history}){
-    axios
-    .delete("http://localhost:3000/api/comments", {
-      postId: postId,
-      commentId: commentId,
-    },{headers : {'Authorization': `Bearer ${sessionStorage.getItem("MY_SESSION")}`}})
-    .then((res) => {
-      axios
-        .get('http://localhost:3000/api/posts',
-      {headers : {'Authorization': `Bearer ${sessionStorage.getItem("MY_SESSION")}`}}
-      ).then((response) => {
-        console.log(response.data)
-        dispatch(setPost(response.data))
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    });
-    
-  }
+	console.log(postId, commentId)
+	return function (dispatch, getState, { history }) {
+		axios.delete(`http://13.209.13.200/api/comments/${commentId}`, {
+			data: { postId },
+			headers: {
+				Authorization: `Bearer ${sessionStorage.getItem('MY_SESSION')}`
+			}
+		}).then((res) => {
+			axios.get('http://13.209.13.200/api/posts',
+				{
+					headers: {
+						'Authorization': `Bearer ${sessionStorage.getItem(
+							'MY_SESSION')}`
+					}
+				}
+			).then((response) => {
+				console.log(response.data)
+				dispatch(setPost(response.data))
+			}).catch((error) => {
+				console.log(error)
+			})
+		})
+
+	}
 }
 
 export default handleActions(

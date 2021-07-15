@@ -15,7 +15,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { actionCreators as postActions } from "../redux/modules/post";
 import axios from "axios";
 
-
 const PostList = (props) => {
   const dispatch = useDispatch();
   const [show, setShow] = React.useState(false);
@@ -102,10 +101,10 @@ const PostList = (props) => {
           </Grid>
           <IconWrap>
             <IconClickSpan>
-             {showComment ? 
+             {showComment ?
              <IoChatbubbleEllipsesSharp onClick={hide_edit_cnt} />
              :
-             <IoChatbubbleEllipsesSharp onClick={show_edit_cnt}/> } 
+             <IoChatbubbleEllipsesSharp onClick={show_edit_cnt}/> }
               
             </IconClickSpan>{props.post_data.comments.length}
           </IconWrap>

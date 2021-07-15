@@ -48,7 +48,6 @@ export default function SignInSide() {
   const [id, setId] = React.useState("");
   const [pwd, setPwd] = React.useState("");
   const login = () => {
-    console.log(id,pwd)
     dispatch(userActions.loginDB(id, pwd))
   }
   const goSignup = () => {
@@ -79,7 +78,7 @@ export default function SignInSide() {
             />
             <TextField
               onChange={(e) => {setPwd(e.target.value)}}
-
+              
               variant="outlined"
               margin="normal"
               required

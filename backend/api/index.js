@@ -11,10 +11,10 @@ const router = express.Router();
 
 router.use("/signin", signinRouter);
 router.use("/signup", signupRouter);
+router.use("/duplicate", duplicateRouter);
 router.use(auth);
 router.use("/posts", postsRouter);
 router.use("/comments", commentsRouter);
-router.use("/duplicate", duplicateRouter);
 router.use("/google", socialRouter);
 router.use("/github", socialRouter);
 router.use("/kakao", socialRouter);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -9,6 +9,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import { useDispatch } from "react-redux";
 import { actionCreators as userActions } from "../redux/modules/user";
+import {IdCheck, NickCheck, pwdCheck} from "../shared/common";
 import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
@@ -44,30 +45,47 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignupSide() {
   const classes = useStyles();
+  const Idinput = useRef();
+  console.log(Idinput.focus)
   const dispatch = useDispatch();
   const [id, setId] = React.useState("");
   const [pwd, setPwd] = React.useState("");
   const [pwd_check, setPwdCheck] = React.useState("");
   const [nick, setNick] = React.useState("");
+  const [duplicate, setduplicate] = React.useState(false);
   const goSignin = () => {
     window.location.href = "/"
   }
   const duplicateCheck = () => {
-    console.log('sdf')
+    if (id===""||nick===""){
+      window.alert("빈 칸을 채워주세요!")
+      return;
+    }
+    if (id.length < 3||!IdCheck(id)) {
+      window.alert("영어와 숫자만 입력해주세요! 최소 3글자!")
+      return;
+    }
+    if (nick.length < 3||!NickCheck(nick)) {
+      window.alert("한글,영어,숫자만 입력가능합니다! 최소 3글자!")
+      return;
+    }
     axios
-    .post(`http://localhost:3000/api/duplicate`, {
+    .post(`http://13.209.13.200/api/duplicate`, {
       loginId : `${id}`,
       nickname : `${nick}`,
     },)
     .then((res) => {
-      console.log(res)
+      console.log(res.status)
+      {setduplicate(res.status === 200)}
+      window.alert("확인 성공!")
     }).catch(function(err) {
+    	console.error(err)
       window.alert("형식을 맞춰주세요!")
     });
   }
-  
+
   const signup = () => {
-  if (id==="" || pwd==="" || pwd_check==="" || nick==="") {
+  if (pwd==="" || pwd_check==="") {
     window.alert("전부 채워주세요!");
     return;
   }
@@ -75,16 +93,8 @@ export default function SignupSide() {
     window.alert("비밀번호가 일치하지 않습니다!");
     return;
   }
-  if (id.length < 3) {
-    window.alert("아이디 최소 3글자")
-    return;
-  }
-  if (pwd.length < 6) {
-    window.alert("비밀번호 최소 6글자")
-    return;
-  }
-  if (nick.length < 3) {
-    window.alert("닉네임 최소 3글자")
+  if (pwd.length < 6||!pwdCheck(pwd)) {
+    window.alert("특수문자,영어,숫자를 최소한 1개 씩 입력해주세요! 최소 6글자 입니다!")
     return;
   }
   console.log(id, pwd, nick)
@@ -100,8 +110,10 @@ export default function SignupSide() {
           <Typography component="h1" variant="h5">
             회원가입
           </Typography>
-          <form className={classes.form} noValidate>
+          <form className={classes.form}>
+
             <TextField
+              disabled={duplicate}
               onChange={(e) => {setId(e.target.value)}}
               variant="outlined"
               margin="normal"
@@ -113,6 +125,7 @@ export default function SignupSide() {
               autoFocus
             />
             <TextField
+              disabled={duplicate}
               onChange={(e) => {setNick(e.target.value)}}
               variant="outlined"
               margin="normal"
@@ -120,16 +133,17 @@ export default function SignupSide() {
               fullWidth
               id="nickname"
               label="NickName"
-              autoFocus
             />
-            <Button
+              <Button
               onClick={duplicateCheck}
+              disabled={duplicate}
               fullWidth
               variant="contained"
               color="primary"
               className={classes.submit}>
               아이디/닉네임 중복확인
             </Button>
+
             <TextField
               onChange={(e) => {setPwd(e.target.value)}}
               variant="outlined"
@@ -138,9 +152,11 @@ export default function SignupSide() {
               fullWidth
               name="password"
               label="Password"
-            //   type="password"
+              type="password"
               id="password"
               autoComplete="current-password"
+              // inputProps = {{ pattern: "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]"}}
+              //todo 여기랑 함수 패턴이 중복돼요
             />
             <TextField
               onChange={(e) => {setPwdCheck(e.target.value)}}
@@ -150,7 +166,7 @@ export default function SignupSide() {
               fullWidth
               name="password"
               label="Password"
-            //   type="password"
+              type="password"
               id="password"
               autoComplete="current-password"
             />
@@ -160,6 +176,7 @@ export default function SignupSide() {
               variant="contained"
               color="primary"
               className={classes.submit}
+              disabled={ !duplicate }
             >
               회원가입
             </Button>

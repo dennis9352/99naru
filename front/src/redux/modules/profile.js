@@ -7,7 +7,7 @@ const MODIFY_PROFILE = "MODIFY_PROFILE";
 
 const getProfile = createAction(GET_PROFILE, (profile_info) => ({ profile_info }));
 const setProfile = createAction(SET_PROFILE, (user) => ({ user }));
-const modifyProfile = createAction(MODIFY_PROFILE, (user) => ({ user })); //회원가입 시 ?
+const modifyProfile = createAction(MODIFY_PROFILE, (user) => ({ user }));
 
 const initialState = {
   user: null,

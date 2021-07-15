@@ -10,7 +10,7 @@ const SET_USER = "SET_USER";
 
 const logOut = createAction(LOG_OUT, (user) => ({ user }));
 const getUser = createAction(GET_USER, (user) => ({ user }));
-const setUser = createAction(SET_USER, (user_id) => ({ user_id })); //회원가입 시 ?
+const setUser = createAction(SET_USER, (user_id) => ({ user_id })); 
 
 if(sessionStorage.getItem("MY_SESSION")===null){
 sessionStorage.setItem("MY_SESSION", "byJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MGVhZDRiYjQwMzg2NzcxOTYyYzNjNTEiLCJuaWNrbmFtZSI6InRlc3QxMjM0NSIsImlhdCI6MTYyNjE3MTg5OCwiZXhwIjoxNjI2MTc0ODk4fQ.WZriXGU0tbbH7fvNSVn6Gj952ADlOd95Nu6udZjBtjo")
@@ -30,17 +30,16 @@ const initialState = {
 const loginDB = (id, pwd) => {
   return function (dispatch, getState, {history}) {
     axios
-    .post("http://localhost:3000/api/signin", {
+    .post("http://13.209.13.200/api/signin", {
       loginId: id,
       password: pwd,
     })
     .then((res) => {
       sessionStorage.setItem("MY_SESSION", res.data.token);
       dispatch(setUser(id))
-      // history.push("/main/home");
       window.location.href = "/main/home";
     }).catch(function (err){
-      window.alert("로그인 실패!");
+      window.alert("아이디 또는 비밀번호를 확인해주세요!");
     });
   }
 };
@@ -48,7 +47,7 @@ const loginDB = (id, pwd) => {
 const signupDB = (id, pwd, nickname) => {
     return function (dispatch, getState, {history}) {
       axios
-      .post("http://localhost:3000/api/signup", {
+      .post("http://13.209.13.200/api/signup", {
         loginId: id,
         password: pwd,
         nickname: nickname,

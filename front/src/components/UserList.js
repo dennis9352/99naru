@@ -1,129 +1,62 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Text, Image, Grid } from "../elements";
 import { Wrapper } from "../elements";
+import io from "socket.io-client";
+import jwt_decode from "jwt-decode";
 
 const UserList = (props) => {
+  const token = sessionStorage.getItem("MY_SESSION");
+  const decoded = jwt_decode(token);
+  const nickname = decoded.nickname;
+  const [currentOn, setCurrentOn] = useState([]);
+
+  const socketRef = useRef();
+
+  useEffect(() => {
+    socketRef.current = io.connect("http://13.209.13.200");
+    socketRef.current.emit("join", { nickname });
+    socketRef.current.on("currentOn", (currentOn) => {
+      console.log(currentOn); // 이게 나와야 하나씩 나올텐데
+      console.log({ currentOn });
+      setCurrentOn(currentOn);
+    });
+    return () => socketRef.current.disconnect();
+  }, []);
+
+  const showCurrentOn = (props) => {
+    if (!currentOn.length) {
+      return <div>로딩 중...</div>;
+    }
+    console.log(currentOn)
+    console.log(typeof currentOn)
+    return currentOn.map((current, index) => (
+      <Wrapper>
+        <Grid is_flex>
+            <Grid is_flex left key={index}>
+              <Image shape="circle" />
+              <Text>{current}</Text>
+            </Grid>
+          <Grid width="0%"></Grid>
+        </Grid>
+      </Wrapper>
+    ));
+  };
+  const emptyspace = () => {
+    return (null);
+  };
   return (
-    <React.Fragment>
-      <Container>
-        <ChattingMode>Users</ChattingMode>
-        <UserWrap>
-          <Wrapper>
-            <Grid is_flex>
-              <Grid is_flex left>
-                <Image shape="circle" />
-                <Text>오늘은 코딩왕</Text>
-              </Grid>
-              <Grid width="0%"></Grid>
-            </Grid>
-          </Wrapper>
-          <Wrapper>
-            <Grid is_flex>
-              <Grid is_flex left>
-                <Image shape="circle" />
-                <Text>오늘은 코딩왕</Text>
-              </Grid>
-              <Grid width="0%"></Grid>
-            </Grid>
-          </Wrapper>
-          <Wrapper>
-            <Grid is_flex>
-              <Grid is_flex left>
-                <Image shape="circle" />
-                <Text>오늘은 코딩왕</Text>
-              </Grid>
-              <Grid width="0%"></Grid>
-            </Grid>
-          </Wrapper>
-          <Wrapper>
-            <Grid is_flex>
-              <Grid is_flex left>
-                <Image shape="circle" />
-                <Text>오늘은 코딩왕</Text>
-              </Grid>
-              <Grid width="0%"></Grid>
-            </Grid>
-          </Wrapper>
-          <Wrapper>
-            <Grid is_flex>
-              <Grid is_flex left>
-                <Image shape="circle" />
-                <Text>오늘은 코딩왕</Text>
-              </Grid>
-              <Grid width="0%"></Grid>
-            </Grid>
-          </Wrapper>
-          <Wrapper>
-            <Grid is_flex>
-              <Grid is_flex left>
-                <Image shape="circle" />
-                <Text>오늘은 코딩왕</Text>
-              </Grid>
-              <Grid width="0%"></Grid>
-            </Grid>
-          </Wrapper>
-          <Wrapper>
-            <Grid is_flex>
-              <Grid is_flex left>
-                <Image shape="circle" />
-                <Text>오늘은 코딩왕</Text>
-              </Grid>
-              <Grid width="0%"></Grid>
-            </Grid>
-          </Wrapper>
-          <Wrapper>
-            <Grid is_flex>
-              <Grid is_flex left>
-                <Image shape="circle" />
-                <Text>오늘은 코딩왕</Text>
-              </Grid>
-              <Grid width="0%"></Grid>
-            </Grid>
-          </Wrapper>
-          <Wrapper>
-            <Grid is_flex>
-              <Grid is_flex left>
-                <Image shape="circle" />
-                <Text>오늘은 코딩왕</Text>
-              </Grid>
-              <Grid width="0%"></Grid>
-            </Grid>
-          </Wrapper>
-          <Wrapper>
-            <Grid is_flex>
-              <Grid is_flex left>
-                <Image shape="circle" />
-                <Text>오늘은 코딩왕</Text>
-              </Grid>
-              <Grid width="0%"></Grid>
-            </Grid>
-          </Wrapper>
-          <Wrapper>
-            <Grid is_flex>
-              <Grid is_flex left>
-                <Image shape="circle" />
-                <Text>오늘은 코딩왕</Text>
-              </Grid>
-              <Grid width="0%"></Grid>
-            </Grid>
-          </Wrapper>
-          <Wrapper>
-            <Grid is_flex>
-              <Grid is_flex left>
-                <Image shape="circle" />
-                <Text>오늘은 코딩왕</Text>
-              </Grid>
-              <Grid width="0%"></Grid>
-            </Grid>
-          </Wrapper>
-        </UserWrap>
-      </Container>
-    </React.Fragment>
+    <Container>
+      <ChattingMode>Users</ChattingMode>
+      <UserWrap>
+        {emptyspace()}
+        {showCurrentOn()}
+      </UserWrap>
+    </Container>
   );
 };
 
-// 채팅바 전체 레이아웃
+// 유저바 전체 레이아웃
 const Container = styled.div`
   border: 3px solid #f7f9f9;
   display: flex;
@@ -135,7 +68,7 @@ const Container = styled.div`
   box-sizing: border-box;
 `;
 
-// 채팅바 상단
+// 유저바 상단
 const ChattingMode = styled.div`
   display: flex;
   align-items: center;
@@ -152,7 +85,7 @@ const ChattingMode = styled.div`
   background-color: #ffffff;
 `;
 
-// 채팅바 내용 레이아웃
+// 유저바 내용 레이아웃
 const UserWrap = styled.div`
   box-sizing: border-box;
   background-color: #ffffff;
@@ -165,9 +98,14 @@ const UserWrap = styled.div`
   padding: 30px 30px 60px;
   overflow-x: hidden;
   overflow-y: auto;
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 `;
 
-// 채팅 입력창
+// 유저바 입력창
 const ChattingInput = styled.input`
   background-color: #ffffff;
   border: none;

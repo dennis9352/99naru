@@ -11,8 +11,11 @@ import { actionCreators as postActions } from "../redux/modules/post";
 const CommentList = (props) => {
   // console.log(props.comments._id)
   // console.log(props.post_info.post_data._id)
-  const postId = props.comments._id
-  const commentId = props.post_info.post_data._id
+  const commentId = props.comments._id
+  const postId = props.post_info.post_data._id
+  console.log(props)
+  console.log(postId)
+  console.log(commentId)
   const dispatch = useDispatch();
   const user_info = useSelector((state) => state.user.user_id)
   const deleteComent = () => {

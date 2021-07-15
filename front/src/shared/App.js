@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 
-// import { Text, Grid, Input, Image } from "./elements";
 import SideBar from "../components/SideBar";
 import ChattingBar from "../components/ChattingBar";
 import UserList from "../components/UserList";
@@ -18,15 +17,12 @@ import { actionCreators as postActions } from "../redux/modules/post";
 import { ConnectedRouter } from "connected-react-router";
 import { history } from "../redux/configureStore";
 
-
-
 const App = (props) => {
   const dispatch = useDispatch();
   React.useEffect(() => {
     dispatch(postActions.getpostDB());
   }, [])
-  const is_session = sessionStorage.getItem("MY_SESSION") ? true : false;
-  if (is_session) {
+
   return (
 
     <React.Fragment>
@@ -43,18 +39,6 @@ const App = (props) => {
       </ConnectedRouter>
     </React.Fragment>
   );
-}
-if (!is_session) {
-  return (
-    <React.Fragment>
-      <ConnectedRouter history={history}>
-        <h1>세션 만료되었습니다.</h1>
-        <Route path="/" exact component={SignInSide} />
-        <Route path="/signup" exact component={SignUpSide} />
-      </ConnectedRouter>
-    </React.Fragment>
-  )
-}
 };
 
 const Container = styled.div`
